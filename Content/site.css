@@ -1,0 +1,21 @@
+﻿body {
+    font-size: .85em;
+    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    color: #232323;
+    background-color: #fff;
+}
+
+header, footer, nav, section {
+    padding: 10px 0;
+    height: 50px;
+    display: block;
+    overflow: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+h2 {
+    font-size: 20px;
+}

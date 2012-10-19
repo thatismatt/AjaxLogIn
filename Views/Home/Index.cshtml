@@ -1,0 +1,86 @@
+﻿<div data-bind="hidden: User.IsAuthenticated()" class="hidden">
+    <p>Welcome to my amazing app, please sign up!</p>
+</div>
+
+<div data-bind="hidden: !User.IsAuthenticated()" class="hidden">
+    <p>Welcome to my amazing app, thanks for signing up!</p>
+</div>
+
+
+<form id="SignUp"
+      class="hidden form-horizontal"
+      data-bind="hidden: User.IsAuthenticated,
+                 with: SignUpDetails">
+    <div class="control-group">
+        <label for="Email" class="control-label">Email</label>
+        <div class="controls">
+            <input id="Email" name="Email" data-bind="value: Email" type="text" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="Password" class="control-label">Password</label>
+        <div class="controls">
+            <input id="Password" name="Password" data-bind="value: Password" type="password" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="ConfirmPassword" class="control-label">Confirm password</label>
+        <div class="controls">
+            <input id="ConfirmPassword" name="ConfirmPassword" data-bind="value: ConfirmPassword" type="password" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">I agree to the license</label>
+        <div class="controls">
+            <input name="AgreeToLicence" type="checkbox" data-bind="checked: AgreeToLicence" />
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <input type="submit" value="Sign up" data-bind="enable: AgreeToLicence" class="btn" />
+        </div>
+    </div>
+</form>
+
+@section scripts
+{
+    <script type="text/javascript">
+        (function () {
+            var model = new ajaxlogin.Account();
+            model.Refresh();
+
+            // Hook up form to validation rules from the StaticJsController using jQuery validate
+            // NOTE: id is magic, it is the:
+            //  * form id, and the
+            //  * property of the Account model, that is the submit handler for the form, and the
+            //  * property of ajaxlogin.Routes from the StaticJsController, and the
+            //  * property of ajaxlogin.Validation from the StaticJsController
+            var hookupValidation = function (id, showErrorMessages) {
+                var validationOptions = {
+                    //debug: true,
+                    submitHandler: model[id],
+                    rules: ajaxlogin.Validation[id].Rules,
+                    messages: ajaxlogin.Validation[id].Messages,
+                    highlight: function (label) {
+                        $(label).parents('.control-group').addClass('error');
+                    },
+                    unhighlight: function (label) {
+                        $(label).parents('.control-group').removeClass('error');
+                    },
+                    errorClass: 'help-inline'
+                };
+                if (!showErrorMessages) {
+                    validationOptions.errorPlacement = function () {};
+                }
+                var validator = $('#' + id).validate(validationOptions);
+
+                model.OnError[id] = function (errors) { validator.showErrors(errors); }; // wrapping function makes sure this stays bound to validator
+            };
+
+            hookupValidation('SignUp', true);
+            hookupValidation('LogIn', false);
+
+            ko.applyBindings(model);
+        })();
+    </script>
+}
