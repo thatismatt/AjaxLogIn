@@ -1,0 +1,8 @@
+*~
+*.swp
+*.suo
+obj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+_Resharper*/
